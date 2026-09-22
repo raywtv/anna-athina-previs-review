@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Raysons Constructions Pty Ltd">
+<title>Raysons Constructions Pty Ltd</title>
+<path d="M0 0 h320 v320 h-320 Z" fill="#0747AD"/>
+<path class="piece body" d="M26.5 50.0H214.5C257.5 50.0 284.5 76.0 284.5 111.0C284.5 146.0 257.5 175.0 208.5 180.0L293.5 270.0H209.5L77.5 132.0H189.5C209.5 132.0 209.5 104.0 189.5 104.0H26.5V50.0Z" fill="#FFD21C"/>
+<path class="piece base" d="M26.5 201.0 94.5 270.0H26.5V201.0Z" fill="#FFD21C"/>
+<path class="piece slash" d="M26.5 115.0 180.5 270.0H108.5L26.5 187.0V115.0Z" fill="#FFFFFF"/>
+</svg>
