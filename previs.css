@@ -2,3 +2,5 @@ body{background:#102336;color:#eaf0f5}header{background:#0c1b2b}main{max-width:1
 
 /* Keep the decoding video on a composited layer behind the opaque render. */
 #scene{z-index:1}#footage{z-index:0}#badge{z-index:2}
+
+#end-card{position:absolute;inset:0;z-index:5;background:#102336;color:#eef0e7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}#end-card[hidden]{display:none}#end-card span{font-size:11px;letter-spacing:.15em;color:#ffd100}#end-card strong{font-size:clamp(24px,4vw,48px);font-weight:400}#end-card p,#end-card small{margin:0;color:#bac8cf}#end-card small{font-size:11px}@media(max-width:759px){#stage{aspect-ratio:4/3}}

@@ -37,8 +37,11 @@ function finishShader(material,mode){
    float panes=max(1.,floor(panelSize.x/2.2+.5));
    float u=(surfacePoint.x+.5)*panes;
    float seam=min(fract(u),1.-fract(u))*panelSize.x/panes;
-   float frame=1.-smoothstep(.032,.044,seam);
-   float horizontal=1.-smoothstep(.032,.047,(.5-abs(surfacePoint.y))*panelSize.y);
+   float aa=max(.006,fwidth(seam));
+   float frame=1.-smoothstep(.038-aa,.038+aa,seam);
+   float edgeY=(.5-abs(surfacePoint.y))*panelSize.y;
+   float ay=max(.007,fwidth(edgeY));
+   float horizontal=1.-smoothstep(.039-ay,.039+ay,edgeY);
    float frameMask=max(frame,horizontal);
    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.050,.056,.053),frameMask);`;
   const band=`
@@ -133,7 +136,8 @@ export function applyLook(model){
   tile:finishShader(standard('Terrace mineral finish / inferred',0x96968c,.88),'render'),
   coping:standard('Pool pale mineral edge / inferred',0xc5c3b4,.65),
   pool: finishShader(new T.MeshPhysicalMaterial({name:'Water / static inexpensive surface',color:0x396f70,roughness:.095,metalness:0,ior:1.333,clearcoat:.35,clearcoatRoughness:.12,envMapIntensity:2.2}),'water'),
-  base:standard('Neutral mineral base',0x92978f,.94)
+  base:standard('Neutral mineral base',0x92978f,.94),
+  garden:standard('A0106 planted-ground abstraction',0x788274,1)
  };
  const rippleData=new Uint8Array(128*128*4);
  for(let y=0;y<128;y++)for(let x=0;x<128;x++){const i=(y*128+x)*4;const u=x/128*Math.PI*2,v=y/128*Math.PI*2;rippleData[i]=128+Math.round(18*Math.cos(u*5+Math.sin(v*3)));rippleData[i+1]=128+Math.round(14*Math.sin(v*4+Math.sin(u*2)));rippleData[i+2]=253;rippleData[i+3]=255;}
@@ -150,6 +154,7 @@ export function applyLook(model){
   if(name==='roof / pool water')m=materials.pool;
   if(name==='roof / raised terrace'&&old===0xe8e5dc)m=materials.tile;
   if(name.includes('site /'))m=materials.base;
+  if(old===0x788274)m=materials.garden;
   if(name==='connection / glazing and roof'&&old===0xe8e5dc)m=materials.metal;
   o.material=m;o.castShadow=m!==materials.rail&&m!==materials.pool;o.receiveShadow=m!==materials.rail;
   assignments.push({group:name,mesh:o.name,material:m.name});
@@ -161,7 +166,7 @@ export function setupLighting(renderer,world,foreground){
  const pmrem=new T.PMREMGenerator(renderer);pmrem.compileEquirectangularShader();
  const envCache=new Map();
  const rigs=[world,foreground].map(scene=>{const hemi=new T.HemisphereLight(),sun=new T.DirectionalLight();sun.target.position.set(38,6,17);scene.add(hemi,sun,sun.target);return {hemi,sun};});
- const sun=rigs[0].sun;sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<760?1024:2048,innerWidth<760?1024:2048);Object.assign(sun.shadow.camera,{left:-50,right:50,top:35,bottom:-35,near:1,far:180});sun.shadow.bias=-.0005;sun.shadow.normalBias=.065;
+ const sun=rigs[0].sun;sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<760?1024:2048,innerWidth<760?1024:2048);Object.assign(sun.shadow.camera,{left:-50,right:50,top:35,bottom:-35,near:1,far:180});sun.shadow.bias=-.0015;sun.shadow.normalBias=.065;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
  function environment(key){if(envCache.has(key))return envCache.get(key);const p=lighting[key],w=512,h=256,data=new Float32Array(w*h*4),sky=new T.Color(p.sky),ground=new T.Color(p.ground),horizon=new T.Color(0xe6e5da);
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const elev=Math.cos(y/(h-1)*Math.PI);let c=elev>0?horizon.clone().lerp(sky,Math.pow(elev,.45)):horizon.clone().lerp(ground,Math.pow(-elev,.28));const highlight=Math.exp(-((x/w-.22)**2/.026+(y/h-.30)**2/.045));const cloud=Math.pow(.5+.5*Math.sin(x/w*Math.PI*8+Math.sin(y/h*14)),4)*Math.exp(-((y/h-.38)**2)/.012);c.multiplyScalar((elev>0?.95:.32)+highlight*.6+cloud*.5);const i=(y*w+x)*4;data[i]=c.r;data[i+1]=c.g;data[i+2]=c.b;data[i+3]=1;}

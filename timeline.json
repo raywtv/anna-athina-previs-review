@@ -1,1 +1,416 @@
-{"stages":[{"id":"site","start":0,"end":0.06,"title":"The site, before the building","state":"Earthmoving and trench/form preparation. No invented piles or basement.","reviewSeconds":4},{"id":"base","start":0.06,"end":0.14,"title":"A concrete ground plane","state":"Broad A ground/base slab and early support indications; B base timing not asserted.","reviewSeconds":5},{"id":"b-lead","start":0.14,"end":0.27,"title":"B wing leads","state":"B solid walls/core and stacked working tiers dominate. A remains low with deck preparation.","reviewSeconds":9},{"id":"deck-prep","start":0.27,"end":0.37,"title":"The transfer deck is prepared","state":"Broad A formed/reinforced deck with major openings; B/connection remains above it.","reviewSeconds":7},{"id":"transfer","start":0.37,"end":0.44,"title":"The transfer pour","state":"A transfer slab resolves to concrete while the advanced B state holds.","reviewSeconds":5},{"id":"upper","start":0.44,"end":0.6,"title":"A catches up; the form emerges","state":"A upper slabs, supports and solid enclosure progress; remaining B structure completes. Balcony concrete belongs with its supporting floor.","reviewSeconds":10},{"id":"roof","start":0.6,"end":0.68,"title":"Curves, roof and rooftop shell","state":"Curved concrete bands, staggered roof profiles, access mass, raised terrace and pool shell. No water or final coping yet.","reviewSeconds":6},{"id":"completion","start":0.68,"end":0.77,"title":"Architecture becomes complete","state":"Glazing, final fa\u00e7ade response, screens, balustrades, terrace finish, coping and water.","reviewSeconds":7},{"id":"complete-hold","start":0.77,"end":0.82,"title":"Completed Anna Athina","state":"All 35 groups restored exactly to the approved visual endpoint; temporary construction states absent.","reviewSeconds":4},{"id":"dock","start":0.82,"end":0.88,"title":"Return to human scale","state":"Completed model remains unchanged.","reviewSeconds":8},{"id":"blade","start":0.88,"end":0.92,"title":"The approved blade passage","state":"Exact approved completed model, path, blade and colour handling.","reviewSeconds":3},{"id":"bridge","start":0.92,"end":0.96,"title":"Real Anna Athina, close","state":"Real fa\u00e7ade-side bridge; blade clears and native video takes over.","reviewSeconds":3.08},{"id":"drone","start":0.96,"end":1,"title":"The completed-project reveal","state":"Real wider drone reveal, then ordinary project content.","reviewSeconds":3.24}],"cameraKeys":[{"progress":0,"p":[8,5.8,38],"target":[24,3.4,19],"fov":45,"status":"proposed, except exact docking endpoint"},{"progress":0.06,"p":[22,13,46],"target":[35,3.4,18],"fov":44,"status":"proposed, except exact docking endpoint"},{"progress":0.14,"p":[15,13,44],"target":[27,6,21],"fov":44,"status":"proposed, except exact docking endpoint"},{"progress":0.27,"p":[29,14,42],"target":[29,8,21],"fov":44,"status":"proposed, except exact docking endpoint"},{"progress":0.37,"p":[52,16,42],"target":[49,6.7,18],"fov":43,"status":"proposed, except exact docking endpoint"},{"progress":0.44,"p":[62,19,40],"target":[51,8,19],"fov":43,"status":"proposed, except exact docking endpoint"},{"progress":0.6,"p":[88,25,37],"target":[54,11,20],"fov":42,"status":"proposed, except exact docking endpoint"},{"progress":0.68,"p":[65,32,40],"target":[44,14,20],"fov":42,"status":"proposed, except exact docking endpoint"},{"progress":0.77,"p":[24,19,46],"target":[35,9,23],"fov":43,"status":"proposed, except exact docking endpoint"},{"progress":0.82,"p":[21,18,46],"target":[34,9,23],"fov":43,"status":"proposed, except exact docking endpoint"},{"progress":0.852,"p":[-9,10,40],"target":[15,8,24],"fov":46,"status":"proposed, except exact docking endpoint"},{"progress":0.866,"p":[-5.8,6.2,36.9184],"target":[13.7755,8.6755,25.2163],"fov":48,"status":"proposed, except exact docking endpoint"},{"progress":0.88,"p":[0.6,6.2,33],"target":[19,7.5,26],"fov":48,"status":"proposed, except exact docking endpoint"}]}
+{
+  "title": "Anna Athina \u2014 direction + storyboard",
+  "version": "fidelity-successor-review",
+  "scope": "2D planning board, not a rendered or collision-tested 3D previs",
+  "stages": [
+    {
+      "id": "site",
+      "start": 0,
+      "end": 0.06,
+      "title": "The site, before the building",
+      "date": "December 2024",
+      "state": "Earthmoving and trench/form preparation. No invented piles or basement.",
+      "camera": "Low exterior start; short rise to read the actual footprint.",
+      "transition": "A quiet site surface and footprint establish in place; no logo morph.",
+      "focus": "Human scale; an actual place, not a floating object.",
+      "confidence": "Observed early state; earth profile schematic",
+      "reviewSeconds": 3,
+      "diagramB": 0,
+      "diagramA": 0,
+      "mobileSeconds": 2
+    },
+    {
+      "id": "base",
+      "start": 0.06,
+      "end": 0.14,
+      "title": "A concrete ground plane",
+      "date": "March 2025",
+      "state": "Broad A ground/base slab and early support indications; B base timing not asserted.",
+      "camera": "Dolly along the street-facing edge; lift just enough to see voids and footprint.",
+      "transition": "Unfinished slab becomes legible in place; no simulated foundation system.",
+      "focus": "Weight and precision.",
+      "confidence": "Ground pour observed; L1 mapping provisional",
+      "reviewSeconds": 5,
+      "diagramB": 0.1,
+      "diagramA": 0.1,
+      "mobileSeconds": 4
+    },
+    {
+      "id": "b-lead",
+      "start": 0.14,
+      "end": 0.27,
+      "title": "B wing leads",
+      "date": "May 2025",
+      "state": "B solid walls/core and stacked working tiers dominate. A remains low with deck preparation.",
+      "camera": "Track beside B; open the composition toward the lower, broader A side.",
+      "transition": "Reveal B structural subsets before A upper structure. Solid walls develop with the structure, not all at the end.",
+      "focus": "The defining asymmetry of this real build.",
+      "confidence": "High B-ahead confidence; exact completed B floor count unresolved",
+      "reviewSeconds": 8,
+      "diagramB": 0.57,
+      "diagramA": 0.15,
+      "mobileSeconds": 6
+    },
+    {
+      "id": "deck-prep",
+      "start": 0.27,
+      "end": 0.37,
+      "title": "The transfer deck is prepared",
+      "date": "June 2025",
+      "state": "Broad A formed/reinforced deck with major openings; B/connection remains above it.",
+      "camera": "Dolly toward A, then a modest crane over its edge; stay outside unsupported interior spaces.",
+      "transition": "Minimal temporary deck-top/formwork state on the existing transfer outline. Voids stay open.",
+      "focus": "Preparation and load-bearing scale.",
+      "confidence": "Observed pre-pour condition; drawing-derived topology",
+      "reviewSeconds": 4,
+      "diagramB": 0.57,
+      "diagramA": 0.25,
+      "mobileSeconds": 3
+    },
+    {
+      "id": "transfer",
+      "start": 0.37,
+      "end": 0.44,
+      "title": "The transfer pour",
+      "date": "July 2025",
+      "state": "A transfer slab resolves to concrete while the advanced B state holds.",
+      "camera": "Continue the same shallow elevated move; no interruption for a video montage.",
+      "transition": "In-place surface/state reveal; do not claim a measured pour direction. Remove temporary top state only after concrete is present.",
+      "focus": "A deliberate turning point.",
+      "confidence": "Transfer pour explicitly identified in existing footage",
+      "reviewSeconds": 3,
+      "diagramB": 0.57,
+      "diagramA": 0.33,
+      "mobileSeconds": 2
+    },
+    {
+      "id": "upper",
+      "start": 0.44,
+      "end": 0.6,
+      "title": "A catches up; the form emerges",
+      "date": "July \u2192 January evidence gap",
+      "state": "A upper slabs, supports and solid enclosure progress; remaining B structure completes. Balcony concrete belongs with its supporting floor.",
+      "camera": "Rise along the angled A end; use successive slab edges as foreground parallax.",
+      "transition": "Undated architectural compression between evidenced endpoints. Never present an exact invented pour programme.",
+      "focus": "The asymmetry becomes one recognisable building.",
+      "confidence": "End state observed; intermediate order schematic",
+      "reviewSeconds": 10,
+      "diagramB": 0.9,
+      "diagramA": 0.86,
+      "mobileSeconds": 7
+    },
+    {
+      "id": "roof",
+      "start": 0.6,
+      "end": 0.68,
+      "title": "Curves, roof and rooftop shell",
+      "date": "January 2026 title / February filename",
+      "state": "Curved concrete bands, staggered roof profiles, access mass, raised terrace and pool shell. No water or final coping yet.",
+      "camera": "Shallow crane inward in framing, physically outside the building; reveal A/B roof stagger and shell.",
+      "transition": "Concrete edge form develops with structure; roof and shell resolve without airborne parts.",
+      "focus": "Recognisable Anna Athina silhouette.",
+      "confidence": "Advanced shell observed; individual roof/pool installation sequence unknown",
+      "reviewSeconds": 7,
+      "diagramB": 1,
+      "diagramA": 1,
+      "mobileSeconds": 5
+    },
+    {
+      "id": "completion",
+      "start": 0.68,
+      "end": 0.77,
+      "title": "Architecture becomes complete",
+      "date": "January \u2192 finished evidence gap",
+      "state": "Glazing, final fa\u00e7ade response, screens, balustrades, terrace finish, coping and water.",
+      "camera": "Descend gently along the positive-Z exterior toward a wider completed composition.",
+      "transition": "Zone-level enclosure/finish transition into the exact frozen look. No new palette or lighting state.",
+      "focus": "A restrained, satisfying completion.",
+      "confidence": "Finished appearance verified; installation order not documented",
+      "reviewSeconds": 11,
+      "diagramB": 1,
+      "diagramA": 1,
+      "mobileSeconds": 8
+    },
+    {
+      "id": "complete-hold",
+      "start": 0.77,
+      "end": 0.82,
+      "title": "Completed Anna Athina",
+      "date": "Approved look baseline",
+      "state": "All 35 groups restored exactly to the approved visual endpoint; temporary construction states absent.",
+      "camera": "Small composed drift; allow roof, bands and glazing to be read together.",
+      "transition": "Hold the completed architecture; no new effect.",
+      "focus": "Recognition and confidence.",
+      "confidence": "Frozen completed-building endpoint",
+      "reviewSeconds": 6,
+      "diagramB": 1,
+      "diagramA": 1,
+      "mobileSeconds": 4
+    },
+    {
+      "id": "dock",
+      "start": 0.82,
+      "end": 0.88,
+      "title": "Return to human scale",
+      "date": "Proposed exterior connector",
+      "state": "Completed model remains unchanged.",
+      "camera": "Descend around the open B end, turn gently eastward, and enter the exact approved path start and tangent.",
+      "transition": "Continuous exterior connection; this approach is the main next-previs feasibility test.",
+      "focus": "From whole building to architectural detail.",
+      "confidence": "Proposed camera path; clearance/framing not yet rendered",
+      "reviewSeconds": 16,
+      "diagramB": 1,
+      "diagramA": 1,
+      "mobileSeconds": 14
+    },
+    {
+      "id": "blade",
+      "start": 0.88,
+      "end": 0.92,
+      "title": "The approved blade passage",
+      "date": "Frozen technical handover",
+      "state": "Exact approved completed model, path, blade and colour handling.",
+      "camera": "Replay the approved 0\u20133.000 s approach without retiming or recalibration.",
+      "transition": "At maximum blade cover, real footage is already moving behind the occluder.",
+      "focus": "A purposeful passage into reality.",
+      "confidence": "Approved handover; not redesigned",
+      "reviewSeconds": 3,
+      "diagramB": 1,
+      "diagramA": 1,
+      "mobileSeconds": 3
+    },
+    {
+      "id": "bridge",
+      "start": 0.92,
+      "end": 0.96,
+      "title": "Real Anna Athina, close",
+      "date": "40.720\u201343.800 s / approved finished source",
+      "state": "Real fa\u00e7ade-side bridge; blade clears and native video takes over.",
+      "camera": "Original real camera motion.",
+      "transition": "Play 3.080 seconds naturally, never scroll-seek every video frame.",
+      "focus": "Raysons physically built this.",
+      "confidence": "Approved real bridge",
+      "reviewSeconds": 3.08,
+      "diagramB": 1,
+      "diagramA": 1,
+      "mobileSeconds": 3.08
+    },
+    {
+      "id": "drone",
+      "start": 0.96,
+      "end": 1,
+      "title": "The completed-project reveal",
+      "date": "29.600\u201332.840 s / approved finished source",
+      "state": "Real wider drone reveal, then ordinary project content.",
+      "camera": "Original real drone movement.",
+      "transition": "Clean real-to-real cut; 3.240 seconds to breathe.",
+      "focus": "Context and achievement.",
+      "confidence": "Approved real reveal",
+      "reviewSeconds": 4.84,
+      "diagramB": 1,
+      "diagramA": 1,
+      "mobileSeconds": 4.84
+    }
+  ],
+  "cameraKeys": [
+    {
+      "progress": 0,
+      "p": [
+        8,
+        5.8,
+        38
+      ],
+      "target": [
+        24,
+        3.4,
+        19
+      ],
+      "fov": 45,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.06,
+      "p": [
+        22,
+        13,
+        46
+      ],
+      "target": [
+        35,
+        3.4,
+        18
+      ],
+      "fov": 44,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.14,
+      "p": [
+        15,
+        13,
+        44
+      ],
+      "target": [
+        27,
+        6,
+        21
+      ],
+      "fov": 44,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.27,
+      "p": [
+        29,
+        14,
+        42
+      ],
+      "target": [
+        29,
+        8,
+        21
+      ],
+      "fov": 44,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.37,
+      "p": [
+        52,
+        16,
+        42
+      ],
+      "target": [
+        49,
+        6.7,
+        18
+      ],
+      "fov": 43,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.44,
+      "p": [
+        62,
+        19,
+        40
+      ],
+      "target": [
+        51,
+        8,
+        19
+      ],
+      "fov": 43,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.6,
+      "p": [
+        88,
+        25,
+        37
+      ],
+      "target": [
+        54,
+        11,
+        20
+      ],
+      "fov": 42,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.68,
+      "p": [
+        65,
+        32,
+        40
+      ],
+      "target": [
+        44,
+        14,
+        20
+      ],
+      "fov": 42,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.77,
+      "p": [
+        24,
+        19,
+        46
+      ],
+      "target": [
+        35,
+        9,
+        23
+      ],
+      "fov": 43,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.82,
+      "p": [
+        21,
+        18,
+        46
+      ],
+      "target": [
+        34,
+        9,
+        23
+      ],
+      "fov": 43,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.852,
+      "p": [
+        -9,
+        10,
+        40
+      ],
+      "target": [
+        15,
+        8,
+        24
+      ],
+      "fov": 46,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.866,
+      "p": [
+        -5.8,
+        6.2,
+        36.9184
+      ],
+      "target": [
+        13.7755,
+        8.6755,
+        25.2163
+      ],
+      "fov": 48,
+      "status": "proposed, except exact docking endpoint"
+    },
+    {
+      "progress": 0.88,
+      "p": [
+        0.6,
+        6.2,
+        33
+      ],
+      "target": [
+        19,
+        7.5,
+        26
+      ],
+      "fov": 48,
+      "status": "proposed, except exact docking endpoint"
+    }
+  ],
+  "reviewDuration": 83.92,
+  "coordinateSystem": "Frozen model metres; X grid 1\u219211, Y RL, Z A\u2192E. Positive Z is the street-facing approach side; not a compass claim.",
+  "finalPath": "Frozen walk path starts at p=[0.6,6.2,33], target=[19,7.5,26], vFOV=48 degrees. Its timing is untouched.",
+  "insertDecision": "DO NOT USE in first previs: available July 848\u00d7480 source too soft for controlling desktop presentation."
+}
