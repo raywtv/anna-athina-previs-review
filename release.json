@@ -1,12 +1,12 @@
 {
-  "review": "atrium-entry-successor",
-  "release": "2026-09-24-v1",
+  "review": "service-frontage-successor",
+  "release": "2026-09-26-v1",
   "building": {
     "groups": 35,
-    "triangles": 23744,
-    "drawCalls": 75
+    "triangles": 26324,
+    "drawCalls": 78
   },
-  "sourceGeometrySHA256": "f9baefd5d2d5784e9d1b92ad6bdf09edfc6b50cbfc9c777b51608851def56baa",
+  "sourceGeometrySHA256": "7c238e9a7ac519d94f88870612ef944f97e7fc4429800f1dfac97a17e1238b78",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "dcbabc45efef4d906ba6a3dfd95817deb3d53ee369b7fffa4a028a942cdc81f8"
+  "fullFilmSHA256": "41c9d2c86de2c85f0dc71c937822f939abd7afef2597a3c7a98398379b6b9735"
 }

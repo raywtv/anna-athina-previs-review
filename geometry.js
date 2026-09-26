@@ -1,4 +1,5 @@
 import * as T from './three.module.min.js';
+import {buildServiceFrontage} from './service-frontage.js';
 import {buildEntryAssembly} from './entry-assembly.js';
 import {slabVoids,groundWalls,poolGeometry} from './refinement-data.js';
 
@@ -90,6 +91,8 @@ export function makeAnna(){
   for(let j=0;j<pts.length;j++){
    const a=pts[j],b=pts[(j+1)%pts.length],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
    if(len<.001)continue;
+   // Replace only the erroneous service-frontage trace with its actual apertures/returns.
+   if(side==='A'&&level===0&&Math.min(a[0],b[0])>=37.1&&Math.max(a[0],b[0])<=59.8&&Math.min(a[1],b[1])>=23)continue;
    const horizontal=Math.abs(dx)>Math.abs(dz),axis=horizontal?0:1,lo=Math.min(a[axis],b[axis]),hi=Math.max(a[axis],b[axis]);
    let openings=[];
    if(horizontal&&Math.max(a[1],b[1])>=21)openings=frontOpen[side];
@@ -120,7 +123,7 @@ export function makeAnna(){
  };
  for(const side of ['A','B'])for(let i=0;i<3;i++){
   const g=group(`${side} / level ${i+1} / enclosure`),y=levels[side][i],h=levels[side][i+1]-y-.3;
-  if(side==='A'&&i===0){const pts=groundWalls.A;facade(g,pts,y,h,side,i);for(let x=41.5;x<67;x+=7.5)box(g,'podium pier',x,y,27.5,.45,h,.55);continue;}
+  if(side==='A'&&i===0){const pts=groundWalls.A;facade(g,pts,y,h,side,i);for(const x of [56.5,64])box(g,'podium pier',x,y,27.5,.45,h,.55);continue;}
   const pts=i===0?groundWalls.B:envelopes[side];facade(g,pts,y,h,side,i);
   for(let j=0;j<pts.length;j++){const p=pts[j];box(g,'solid exterior pier',p[0]-.18,y,p[1]-.18,.36,h,.36);}
   g.userData.facade='A0101–03 / A0301: explicit opening/opaque partition, no continuous glass behind walls';
@@ -178,7 +181,9 @@ export function makeAnna(){
  // North-face pair, located along the angled exterior edge in A0903.
  for(const z of [20.05,20.6])box(blades,'north facade blade',63.55,3.4,z,.55,9.0,.18,mat.band);
  box(core,'upper connection wall',32.4,11.24,26.5,6.8,3.05,.3,mat.clay);
- for(const x of [39.9,47.4,54.9,61.7])box(supports,'ground column',x,3.4,27,.4,3.23,.5,mat.clay);
+ // A0101 and IMG_7761: vehicle aperture is uninterrupted. The approximate-grid
+ // support at X39.9 crossed the drive; only that erroneous A-front instance is removed.
+ for(const x of [47.4,54.9,61.7])box(supports,'ground column',x,3.4,27,.4,3.23,.5,mat.clay);
  for(const side of ['A','B']){const g=group(`${side} / roof plate and profile`),y=levels[side][3];roof(g,`${side} roof`,outlines['roof'+side],y);}
  const terrace=group('roof / raised terrace');
  // Four deck strips preserve the pool opening; a solid deck would occlude its surface.
@@ -237,6 +242,7 @@ export function makeAnna(){
  screens.userData={source:'A0106 / A1037 details 1,2,9',base:4.6,height:1.04,pitch:.13,trace:'A0101/A0106/A0301 continuous retained-edge barrier; main entry remains open; rear terminates at core' };
 
  buildEntryAssembly({T,base,lobby,core,box,plate,solidQuad,mat});
+ buildServiceFrontage({T,g:groups['A / level 1 / enclosure'],base,box,segment,solidQuad,mat});
  // Batch only the newly authored entrance surface solids by their shared material.
  // Coordinates/normals are already model-space; retain part names for diagnostics.
  const surfaceBatches=new Map();for(const m of [...base.children])if(m.userData.entrySurface){if(!surfaceBatches.has(m.material))surfaceBatches.set(m.material,[]);surfaceBatches.get(m.material).push(m);}

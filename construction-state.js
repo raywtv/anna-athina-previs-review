@@ -70,7 +70,7 @@ export function createConstruction(rt){
   // Prefer the slab surface over coplanar column tops in the temporary state.
   // This is raster depth ordering, not altered support/slab geometry.
   if(name.includes('/ slab')){material.m.polygonOffset=true;material.m.polygonOffsetFactor=-1;material.m.polygonOffsetUnits=-1;}
-  records.push({o,name,final,glass,kind,box,plane,planar,...material,timing:o.userData.assemblyRole==='entry-walls'?[.18,.25,.712,.752]:o.userData.assemblyRole==='atrium-returns'?[.54,.60,.712,.752]:o.userData.assemblyRole==='entry-canopy'?[.641,.667,.724,.753]:o.userData.assemblyRole==='egress-doors'?[.716,.745,.716,.745]:schedule(name,final),cast:o.castShadow});
+  records.push({o,name,final,glass,kind,box,plane,planar,...material,timing:o.userData.assemblyRole==='service-walls'?[.14,.179,.702,.745]:o.userData.assemblyRole==='service-doors'?[.716,.745,.716,.745]:o.userData.assemblyRole==='entry-walls'?[.18,.25,.712,.752]:o.userData.assemblyRole==='atrium-returns'?[.54,.60,.712,.752]:o.userData.assemblyRole==='entry-canopy'?[.641,.667,.724,.753]:o.userData.assemblyRole==='egress-doors'?[.716,.745,.716,.745]:schedule(name,final),cast:o.castShadow});
  });
  const core=records.find(r=>r.name==='cores / central connection'&&r.o.isInstancedMesh),corePieces=[];
  const capGeometry=new T.PlaneGeometry(1,1);capGeometry.rotateX(-Math.PI/2);

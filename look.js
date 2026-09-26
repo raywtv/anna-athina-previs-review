@@ -156,6 +156,7 @@ export function applyLook(model){
   if(name.includes('site /'))m=materials.base;
   if(old===0x788274)m=materials.garden;
   if(name==='connection / glazing and roof'&&old===0xe8e5dc)m=materials.metal;
+  if(old===0x3d4240)m=materials.metal; // New service leaves reuse the approved metal material.
   o.material=m;o.castShadow=m!==materials.rail&&m!==materials.pool;o.receiveShadow=m!==materials.rail;
   assignments.push({group:name,mesh:o.name,material:m.name});
  }
