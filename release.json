@@ -1,12 +1,12 @@
 {
-  "review": "service-frontage-successor",
+  "review": "b-nook-site-successor",
   "release": "2026-09-26-v1",
   "building": {
     "groups": 35,
-    "triangles": 26324,
-    "drawCalls": 78
+    "triangles": 26800,
+    "drawCalls": 79
   },
-  "sourceGeometrySHA256": "7c238e9a7ac519d94f88870612ef944f97e7fc4429800f1dfac97a17e1238b78",
+  "sourceGeometrySHA256": "46bc439ec59263a21acca76d4a5aa1efc3831ec53490ac6c35e64bf9c2111ef3",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "41c9d2c86de2c85f0dc71c937822f939abd7afef2597a3c7a98398379b6b9735"
+  "fullFilmSHA256": "93a7c330b097848132008473f1f8c365db5f42690be3491a160ab88d31e35672"
 }

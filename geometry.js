@@ -1,4 +1,5 @@
 import * as T from './three.module.min.js';
+import {buildSiteContext} from './site-context.js';
 import {buildServiceFrontage} from './service-frontage.js';
 import {buildEntryAssembly} from './entry-assembly.js';
 import {slabVoids,groundWalls,poolGeometry} from './refinement-data.js';
@@ -11,9 +12,9 @@ export const outlines={
  A1:[[30,3.8],[73.9,3.8,2.5],[65.5,28.9,1],[32.5,28.9],[32.5,23],[30,23]],
  A2:[[29.5,4.1],[75.4,4.1,2.5],[65.2,28.915,1],[36.7,28.915],[36.7,27.1],[32.7,27.1],[32.7,18.3],[29.5,18.3]],
  A3:[[29.6,6.1],[63.4,6.1],[63.4,14.45],[65.0,14.45],[62.2,27.2,1],[32.5,27.2],[32.5,18],[29.6,18]],
- B1:[[2.05,16.75],[19.25,16.75],[19.25,17.50],[26.8,17.50],[26.8,14.5],[30,14.5],[30,22.80],[29.45,22.80],[29.45,25.45],[23.85,25.45],[23.85,25.90],[14.95,25.90],[14.95,22.90],[10.50,22.90],[10.50,28],[2.05,28]],
- B2:[[0,17.5,1],[26.8,18.4],[26.8,14.5],[29.5,14.5],[29.5,27.25],[20.1,27.25],[20.1,22],[14.85,22],[14.85,27.25],[1.2,27.25,1]],
- B3:[[3.2,17.5,1],[26.8,18.2],[26.8,14.5],[29.5,14.5],[29.5,27.2],[20,27.2],[20,22],[14.85,22],[14.85,27.2],[2.1,27.2,1]],
+ B1:[[2.05,16.75],[19.25,16.75],[19.25,17.50],[26.8,17.50],[26.8,14.5],[30,14.5],[30,22.80],[29.45,22.80],[29.45,25.45],[23.85,25.45],[23.85,25.90],[19.90,25.90],[19.90,22.15],[15.15,22.15],[15.15,25.90],[10.50,25.90],[10.50,28],[2.05,28]],
+ B2:[[0,17.5,1],[26.8,18.4],[26.8,14.5],[29.5,14.5],[29.5,27.25],[20.1,27.25],[20.1,21.8],[14.85,21.8],[14.85,27.25],[1.2,27.25,1]],
+ B3:[[3.2,17.5,1],[26.8,18.2],[26.8,14.5],[29.5,14.5],[29.5,27.2],[20,27.2],[20,21.8],[14.85,21.8],[14.85,27.2],[2.1,27.2,1]],
  roofA:[[29,5.3],[64.3,5.3],[64.3,13.8],[66,13.8],[62.5,28.1],[36.4,28.1],[36.4,26.8],[32.55,26.8],[32.55,18.2],[29,18.2]],
  roofB:[[3.25,16.8],[20,16.8],[20,18.3],[26.3,18.3],[26.3,13.8],[32.5,13.8],[32.5,18.5],[39.2,18.5],[39.2,27.1],[19.25,27.1],[19.25,23],[15,23],[15,28.1],[3.25,28.1]]
 };
@@ -72,6 +73,7 @@ export function makeAnna(){
   const g=group(`${side} / level ${i+1} / slab`);const y=levels[side][i];plate(g,`${side}${i+1} slab`,outlines[side+(i+1)],y,side==='A'&&i===1?.39:.27,mat.band,slabVoids[side+(i+1)]||[]);g.userData={stage:side==='A'&&i===1?'transfer':'floor',wing:side,level:i+1,thicknessStatus:side==='A'&&i===1?'390 mm representative A0902 zone; local thicknesses vary':'simplified'};
   if(i>0){const fas=group(`${side} / level ${i+1} / balcony bands`);boundary(fas,outlines[side+(i+1)],y-.30,.90,.15,mat.band,side==='A'&&i===1);const rails=group(`${side} / level ${i+1} / balustrades`);boundary(rails,outlines[side+(i+1)],y+.60,.45,.035,mat.rail,side==='A'&&i===1);fas.userData.source='A1031 parapet up to 600 mm, A0902/3 local heights vary; 600 mm representative, not universal as-built';}
  }
+ for(const name of ['B / level 2 / balcony bands','B / level 2 / balustrades','B / level 3 / balcony bands','B / level 3 / balustrades']){const g=groups[name];for(const m of [...g.children]){if(m.name!=='perimeter')continue;const x=m.position.x,z=m.position.z;if(x>=14.77&&x<=20.18&&z<25.05)g.remove(m);}}
  frontA3(groups['A / level 3 / balcony bands']);frontA3(groups['A / level 3 / balustrades'],true);
  // A0902 explicitly distinguishes the outer north terrace SSL7200 from
  // interior SSL6630 and front balcony SSL6530. Its stepped inner boundary
@@ -101,6 +103,9 @@ export function makeAnna(){
    if(side==='A'&&level===0){ // A0101 car park rear wall is opaque; retail front only.
     openings=horizontal&&a[1]<10?[]:horizontal?[[59.8,62.5,.55,2.35],[66,70.5,0,2.6]]:[[7.5,24.5,0,2.6]];
    }
+   if(side==='B'&&horizontal&&Math.abs(a[1]-(level===0?21.95:21.8))<.02&&lo>=14.7&&hi<=20.3)openings=[[15.3,16.1,.55,2.58],[18.9,19.7,.55,2.58]];
+   if(side==='B'&&level===0&&horizontal&&Math.abs(a[1]-21.95)<.02&&hi<=10.8)openings=[[7.8,10.4,0,2.35]];
+   if(side==='B'&&!horizontal&&lo>=21.7&&Math.min(a[0],b[0])>=14.7&&Math.max(a[0],b[0])<=20.3)openings=[];
    if(side==='B'&&level===0&&horizontal&&Math.abs(a[1]-25.2)<.01)openings=[...openings,[27.70,28.60,0,2.04]];
    const at=v=>{const t=(v-a[axis])/(b[axis]-a[axis]);return[a[0]+dx*t,a[1]+dz*t]};
    const cuts=[lo,hi,...openings.flatMap(o=>o.slice(0,2)).filter(v=>v>lo&&v<hi)].sort((a,b)=>a-b);
@@ -127,6 +132,12 @@ export function makeAnna(){
   const pts=i===0?groundWalls.B:envelopes[side];facade(g,pts,y,h,side,i);
   for(let j=0;j<pts.length;j++){const p=pts[j];box(g,'solid exterior pier',p[0]-.18,y,p[1]-.18,.36,h,.36);}
   g.userData.facade='A0101–03 / A0301: explicit opening/opaque partition, no continuous glass behind walls';
+ }
+ // A0102/3 + IMG_7772: continuous rendered narrow-window bay, not an
+ // exposed balcony edge. Slab ends within the wall; exterior wall skin bridges
+ // the construction joint with no false plate across the open garden.
+ for(const [level,y] of [[2,7.92],[3,11.24]]){const g=groups[`B / level ${level} / enclosure`];
+  box(g,'B nook rear rendered slab-edge joint',14.9,y-.30,21.8,5.15,.30,.10,mat.clay);
  }
  const core=group('cores / central connection');
  const shaft=(name,x,z,w,d,y,h)=>{box(core,name+' rear',x,y,z,w,h,.2,mat.core);box(core,name+' front',x,y,z+d-.2,w,h,.2,mat.core);box(core,name+' left',x,y,z+.2,.2,h,d-.4,mat.core);box(core,name+' right',x+w-.2,y,z+.2,.2,h,d-.4,mat.core);};
@@ -161,15 +172,8 @@ export function makeAnna(){
  rampQuad('asbuilt full-width return landing',17.10,18.90,3.989,3.989,27.90,29.15);
  rampQuad('asbuilt lower return run / opposite travel',18.90,22.932,3.989,3.852,27.95,29.15);
  rampQuad('asbuilt lower footpath landing',22.932,24.132,3.852,3.852,27.95,29.15);
- // Distinct level footpath and kerb/street, never a sloping sheet toward generic ground.
- rampQuad('asbuilt entrance footpath',-11,32.45,3.852,3.852,29.15,32.00);
- rampQuad('footpath adjoining grade context',32.45,40,3.852,3.15,29.15,32.00);
- rampQuad('footpath A-side context',40,79,3.15,3.15,29.15,32.00);
+ // Footpath/street rebuilt independently from the locked accessible ramp.
  rampQuad('asbuilt stair footpath connector',29.80,32.323,3.852,3.852,29.105,29.15);
- box(base,'asbuilt low kerb face',-11,3.702,31.86,43.45,.15,.14,mat.base);
- rampQuad('local street context',-25,32.45,3.702,3.702,32.00,80.00,mat.core,2.8);
- rampQuad('street adjoining grade context',32.45,40,3.702,3.0,32.00,80.00,mat.core,2.8);
- rampQuad('street A-side context',40,90,3.0,3.0,32.00,80.00,mat.core,2.8);
  // Planting strip lies beside upper route after the lower run opens onto the footpath.
  rampQuad('asbuilt entrance landscape strip',24.132,29.75,3.84,3.84,28.05,29.15,mat.garden);
  box(base,'A0101 garden at recessed stair wall',23.85,4.50,25.46,3.70,.006,.925,mat.garden);
@@ -243,6 +247,8 @@ export function makeAnna(){
 
  buildEntryAssembly({T,base,lobby,core,box,plate,solidQuad,mat});
  buildServiceFrontage({T,g:groups['A / level 1 / enclosure'],base,box,segment,solidQuad,mat});
+ buildSiteContext({base,solidQuad,plate,mat});
+ plate(base,'B garden recess / A0101 U1 W6-W7 open landscape',[[15.18,22.18],[19.87,22.18],[19.87,25.88],[15.18,25.88]],4.508,.008,mat.garden);
  // Batch only the newly authored entrance surface solids by their shared material.
  // Coordinates/normals are already model-space; retain part names for diagnostics.
  const surfaceBatches=new Map();for(const m of [...base.children])if(m.userData.entrySurface){if(!surfaceBatches.has(m.material))surfaceBatches.set(m.material,[]);surfaceBatches.get(m.material).push(m);}

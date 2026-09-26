@@ -43,30 +43,6 @@ export function buildServiceFrontage({T,g,base,box,segment,solidQuad,mat}){
    if(o.type==='louvred-pair')make('paired-door meeting stile',o.x+o.w/2-.018,o.y+.02,z+.023,.036,o.h-.06,.025);
   }
  }
- // Supported, discrete circulation surfaces. The entrance ramp is untouched.
- const slab=(name,x0,x1,z0,z1,y0,y1,m=mat.base)=>solidQuad(base,name,[[x0,y0,z0],[x1,y0,z0],[x1,y1,z1],[x0,y1,z1]],3.15,m);
- slab('D9 garage threshold',37.45,43.17,25.02,25.22,4.05,4.05);
- slab('D9 garage driveway / near 1:20 local arrival',37.45,43.17,25.22,28.90,4.05,3.866);
- slab('D10 pedestrian threshold',44.18,45.38,25.02,25.22,4.05,4.05);
- slab('D10 pedestrian arrival',44.18,45.38,25.22,28.90,4.05,3.866);
- slab('D12 stair03 threshold',48.50,49.88,27.70,27.90,3.95,3.95);
- slab('D12 stair03 landing',48.50,49.88,27.90,28.90,3.95,3.852);
- slab('D13 D14 service threshold',49.88,53.50,26.88,27.08,3.95,3.95);
- slab('D13 D14 recessed service apron',49.88,53.50,27.08,28.90,3.95,3.852);
- slab('D31 D32 bin-room threshold',53.50,59.80,28.75,28.98,3.95,3.95);
- slab('D31 D32 bin-room apron',53.50,59.80,28.98,30.15,3.95,3.852);
- slab('service frontage footpath continuation',37.45,59.80,28.90,31.86,3.852,3.852);
- // Immediate kerb/road tie only: the former generic RL3.15 context otherwise
- // makes the evidenced threshold levels look like a raised podium. This is
- // restrained context grading, not surveyed civil levels or altered entry paths.
- solidQuad(base,'service-frontage kerb and road tie',[[37.45,3.702,31.86],[59.8,3.702,31.86],[59.8,3.0,40],[37.45,3.237,40]],2.8,mat.core);
- solidQuad(base,'service west footpath tie',[[34.9,3.624,28.9],[37.45,3.852,28.9],[37.45,3.852,31.86],[34.9,3.624,31.86]],3.15,mat.base);
- solidQuad(base,'service east footpath tie',[[59.8,3.852,28.9],[65.8,3.15,28.9],[65.8,3.15,31.86],[59.8,3.852,31.86]],3.15,mat.base);
- solidQuad(base,'service west road tie',[[34.9,3.474,31.86],[37.45,3.702,31.86],[37.45,3.237,40],[34.9,3.474,40]],2.8,mat.core);
- solidQuad(base,'service east road tie',[[59.8,3.702,31.86],[65.8,3.0,31.86],[65.8,3.0,40],[59.8,3.0,40]],2.8,mat.core);
- // Narrow kerbs/planting beds frame paths; no speculative decorative planting.
- for(const [x0,x1,z0]of [[43.25,44.08,25.15],[45.65,47.75,25.15]]){
-  slab('service garden retained ground',x0,x1,z0,28.88,3.91,3.856,mat.garden);
- }
+ // Local thresholds/arrival surfaces supplied by site-context.js; walls/leaves unchanged.
  g.userData.serviceFrontage={sources:['A0101 rev13','A0802 rev3','A1012','A0301','IMG_7760','IMG_7761'],openings:serviceOpenings,wallTrace:serviceTrace,certainty:'scheduled nominal sizes; rounded plan registration; louvres visually corroborated',retainedEntrance:'D1/D2/D7/D8 and ramp unchanged'};
 }
