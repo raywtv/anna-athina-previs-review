@@ -13,8 +13,8 @@ export const outlines={
  A2:[[29.5,4.1],[75.4,4.1,2.5],[65.2,28.915,1],[36.7,28.915],[36.7,27.1],[32.7,27.1],[32.7,18.3],[29.5,18.3]],
  A3:[[29.6,6.1],[63.4,6.1],[63.4,14.45],[65.0,14.45],[62.2,27.2,1],[32.5,27.2],[32.5,18],[29.6,18]],
  B1:[[2.05,16.75],[19.25,16.75],[19.25,17.50],[26.8,17.50],[26.8,14.5],[30,14.5],[30,22.80],[29.45,22.80],[29.45,25.45],[23.85,25.45],[23.85,25.90],[19.90,25.90],[19.90,22.15],[15.15,22.15],[15.15,25.90],[10.50,25.90],[10.50,28],[2.05,28]],
- B2:[[0,17.5,1],[26.8,18.4],[26.8,14.5],[29.5,14.5],[29.5,27.25],[20.1,27.25],[20.1,21.8],[14.85,21.8],[14.85,27.25],[1.2,27.25,1]],
- B3:[[3.2,17.5,1],[26.8,18.2],[26.8,14.5],[29.5,14.5],[29.5,27.2],[20,27.2],[20,21.8],[14.85,21.8],[14.85,27.2],[2.1,27.2,1]],
+ B2:[[0,17.5,1],[26.8,18.4],[26.8,14.5],[29.5,14.5],[29.5,27.25],[20.1,27.25],[20.1,25],[20.2,25],[20.2,21.8],[14.85,21.8],[14.85,27.25],[1.2,27.25,1]],
+ B3:[[3.2,17.5,1],[26.8,18.2],[26.8,14.5],[29.5,14.5],[29.5,27.2],[20,27.2],[20,25],[20.2,25],[20.2,21.8],[14.85,21.8],[14.85,27.2],[2.1,27.2,1]],
  roofA:[[29,5.3],[64.3,5.3],[64.3,13.8],[66,13.8],[62.5,28.1],[36.4,28.1],[36.4,26.8],[32.55,26.8],[32.55,18.2],[29,18.2]],
  roofB:[[3.25,16.8],[20,16.8],[20,18.3],[26.3,18.3],[26.3,13.8],[32.5,13.8],[32.5,18.5],[39.2,18.5],[39.2,27.1],[19.25,27.1],[19.25,23],[15,23],[15,28.1],[3.25,28.1]]
 };
@@ -73,7 +73,33 @@ export function makeAnna(){
   const g=group(`${side} / level ${i+1} / slab`);const y=levels[side][i];plate(g,`${side}${i+1} slab`,outlines[side+(i+1)],y,side==='A'&&i===1?.39:.27,mat.band,slabVoids[side+(i+1)]||[]);g.userData={stage:side==='A'&&i===1?'transfer':'floor',wing:side,level:i+1,thicknessStatus:side==='A'&&i===1?'390 mm representative A0902 zone; local thicknesses vary':'simplified'};
   if(i>0){const fas=group(`${side} / level ${i+1} / balcony bands`);boundary(fas,outlines[side+(i+1)],y-.30,.90,.15,mat.band,side==='A'&&i===1);const rails=group(`${side} / level ${i+1} / balustrades`);boundary(rails,outlines[side+(i+1)],y+.60,.45,.035,mat.rail,side==='A'&&i===1);fas.userData.source='A1031 parapet up to 600 mm, A0902/3 local heights vary; 600 mm representative, not universal as-built';}
  }
- for(const name of ['B / level 2 / balcony bands','B / level 2 / balustrades','B / level 3 / balcony bands','B / level 3 / balustrades']){const g=groups[name];for(const m of [...g.children]){if(m.name!=='perimeter')continue;const x=m.position.x,z=m.position.z;if(x>=14.77&&x<=20.18&&z<25.05)g.remove(m);}}
+ // A0102/A0103 + A1031/5 + IMG_7772: four independent balcony ends.
+ // Never classify a whole end return by its centroid: the prior filter removed
+ // legitimate exposed returns (Z25..27.2) with the unwanted rear perimeter.
+ for(const [level,y,rightX,frontZ] of [[2,7.92,20.1,27.25],[3,11.24,20.0,27.20]]){
+  for(const rail of [false,true]){
+   const g=groups[`B / level ${level} / ${rail?'balustrades':'balcony bands'}`],t=rail?.035:.15;
+   for(const m of [...g.children]){
+    if(m.name!=='perimeter')continue;
+    const x=m.position.x,z=m.position.z;
+    // Delete inner-recess rear and long side edges; regenerate only the
+    // exposed balcony-to-wall return. The narrow-window wall stays clear.
+    if(x>=14.77&&x<=20.30&&z<25.05){g.remove(m);continue;}
+    // Butt the retained front run to its perpendicular end, without two
+    // coplanar/interpenetrating corner cuboids or an orphan front stub.
+    if(Math.abs(z-frontZ)<.001&&Math.abs(Math.sin(m.rotation.y))<.001){
+     const lo=x-m.scale.x/2,hi=x+m.scale.x/2;
+     if(Math.abs(hi-14.85)<.001){m.scale.x-=t/2;m.position.x-=t/4;}
+     if(Math.abs(lo-rightX)<.001){m.scale.x-=t/2;m.position.x+=t/4;}
+    }
+   }
+   for(const [side,x] of [['left',14.85],['right',rightX]]){
+    box(g,`B${level} ${side} balcony ${rail?'glass termination':'solid fascia end return'}`,
+     x-t/2,rail?y+.60:y-.30,25,t,rail?.45:.90,frontZ+t/2-25,rail?mat.rail:mat.band);
+   }
+   g.userData.terminationAudit={source:'A0102/A0103, A1031 detail5, IMG_7772',wallZ:25,frontZ,leftX:14.85,rightX,solidHeight:.90,glassHeight:.45,openRecess:true};
+  }
+ }
  frontA3(groups['A / level 3 / balcony bands']);frontA3(groups['A / level 3 / balustrades'],true);
  // A0902 explicitly distinguishes the outer north terrace SSL7200 from
  // interior SSL6630 and front balcony SSL6530. Its stepped inner boundary
@@ -113,7 +139,11 @@ export function makeAnna(){
     const u=cuts[k-1],v=cuts[k],m=(u+v)/2,o=openings.find(o=>m>o[0]&&m<o[1]);
     const left=at(u),right=at(v);
     if(side==='A'&&level===0&&horizontal&&Math.abs(a[1]-23)<.01&&m<36.5)continue;
-    if(!o)segment(g,'drawing opaque facade',left,right,y,h,.20,mat.clay);
+    // At the two opaque side returns only, continue the actual wall section
+    // through the floor joint. This replaces the gap left by the old balcony
+    // band; it is not a cover over a projecting slab or a new void-spanning cap.
+    const nookJoint=side==='B'&&level>0&&!horizontal&&lo>=21.7&&Math.min(a[0],b[0])>=14.7&&Math.max(a[0],b[0])<=20.3;
+    if(!o)segment(g,'drawing opaque facade',left,right,y-(nookJoint?.30:0),h+(nookJoint?.30:0),.20,mat.clay);
     else{const sill=o[2],head=Math.min(o[3],h);if(sill>0)segment(g,'window sill wall',left,right,y,sill,.20,mat.clay);
      const fireDoor=side==='B'&&level===0&&horizontal&&Math.abs(a[1]-25.2)<.01&&m>27.70&&m<28.60;
      if(!fireDoor)segment(g,'verified opening / simplified mullions',left,right,y+sill,head-sill,.13,mat.glass);
@@ -130,7 +160,7 @@ export function makeAnna(){
   const g=group(`${side} / level ${i+1} / enclosure`),y=levels[side][i],h=levels[side][i+1]-y-.3;
   if(side==='A'&&i===0){const pts=groundWalls.A;facade(g,pts,y,h,side,i);for(const x of [56.5,64])box(g,'podium pier',x,y,27.5,.45,h,.55);continue;}
   const pts=i===0?groundWalls.B:envelopes[side];facade(g,pts,y,h,side,i);
-  for(let j=0;j<pts.length;j++){const p=pts[j];box(g,'solid exterior pier',p[0]-.18,y,p[1]-.18,.36,h,.36);}
+  for(let j=0;j<pts.length;j++){const p=pts[j],joint=side==='B'&&i>0&&p[0]>=14.7&&p[0]<=20.3&&p[1]>=21.7?.30:0;box(g,'solid exterior pier',p[0]-.18,y-joint,p[1]-.18,.36,h+joint,.36);}
   g.userData.facade='A0101–03 / A0301: explicit opening/opaque partition, no continuous glass behind walls';
  }
  // A0102/3 + IMG_7772: continuous rendered narrow-window bay, not an

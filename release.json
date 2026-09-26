@@ -1,12 +1,12 @@
 {
-  "review": "b-nook-site-successor",
+  "review": "b-balcony-termination-successor",
   "release": "2026-09-26-v1",
   "building": {
     "groups": 35,
-    "triangles": 26800,
+    "triangles": 26960,
     "drawCalls": 79
   },
-  "sourceGeometrySHA256": "46bc439ec59263a21acca76d4a5aa1efc3831ec53490ac6c35e64bf9c2111ef3",
+  "sourceGeometrySHA256": "a2f33701fbc63103dffdf562efcaa8c5d1810ef392bab2818a3c92d483ba884d",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "93a7c330b097848132008473f1f8c365db5f42690be3491a160ab88d31e35672"
+  "fullFilmSHA256": "a14005c05aa6e2b64009b43c28bf2146221f8c87f199a66381ec11e962fb89fe"
 }
