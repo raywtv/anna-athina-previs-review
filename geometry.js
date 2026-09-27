@@ -101,6 +101,34 @@ export function makeAnna(){
   }
  }
  frontA3(groups['A / level 3 / balcony bands']);frontA3(groups['A / level 3 / balustrades'],true);
+ // Confirmed B2 diagnostic target = B level-3 outer FRONT curve (not B2 floor,
+ // not the outer rear/B1 diagnostic and not any central-nook termination).
+ // A0103 wraparound outline + IMG_7773/74/76/78: one continuous solid/glass
+ // curved return. Separate tangent cuboids leave open wedge joints. Rebuild
+ // only that sector as a closed mitred sweep, retaining the same centreline,
+ // heights and tangent endpoints. No invented cross-balcony divider.
+ for(const rail of [false,true]){
+  const g=groups[`B / level 3 / ${rail?'balustrades':'balcony bands'}`];
+  const pieces=g.children.filter(o=>o.name==='perimeter'&&o.position.x<5.3&&o.position.z>25);
+  const ps=shape(outlines.B3).getPoints(10).map(p=>[p.x,p.y]),path=[];
+  for(let i=1;i<ps.length;i++){const a=ps[i-1],b=ps[i];if((a[0]+b[0])/2<5.3&&(a[1]+b[1])/2>25){if(!path.length)path.push(a);path.push(b);}}
+  if(path.length<3||pieces.length!==path.length-1)throw Error('B outer front curve selection changed');
+  for(const o of pieces)g.remove(o);
+  const half=rail?.0175:.075,lo=rail?11.84:10.94,hi=rail?12.29:11.84;
+  const rings=path.map((p,i)=>{const a=path[Math.max(0,i-1)],b=path[Math.min(path.length-1,i+1)];
+   const u=new T.Vector2(p[0]-a[0],p[1]-a[1]),v=new T.Vector2(b[0]-p[0],b[1]-p[1]);
+   if(u.lengthSq()<1e-10)u.copy(v);if(v.lengthSq()<1e-10)v.copy(u);u.normalize();v.normalize();
+   const n1=new T.Vector2(-u.y,u.x),n2=new T.Vector2(-v.y,v.x),n=n1.clone().add(n2).multiplyScalar(half/(1+n1.dot(n2)));
+   return [[p[0]+n.x,lo,p[1]+n.y],[p[0]+n.x,hi,p[1]+n.y],[p[0]-n.x,hi,p[1]-n.y],[p[0]-n.x,lo,p[1]-n.y]];
+  });
+  const pos=[],tri=(a,b,c)=>pos.push(...a,...b,...c);
+  for(let i=1;i<rings.length;i++)for(let j=0;j<4;j++){const k=(j+1)%4;tri(rings[i-1][j],rings[i][j],rings[i][k]);tri(rings[i-1][j],rings[i][k],rings[i-1][k]);}
+  tri(rings[0][0],rings[0][1],rings[0][2]);tri(rings[0][0],rings[0][2],rings[0][3]);
+  const end=rings.at(-1);tri(end[2],end[1],end[0]);tri(end[3],end[2],end[0]);
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.computeVertexNormals();
+  const mesh=new T.Mesh(geo,rail?mat.rail:mat.band);mesh.name='B3 outer front / continuous '+(rail?'glass curved return':'solid upturn curved return');
+  mesh.userData.contactRepair={target:'B2 diagnostic',source:'A0103 + IMG_7773/74/76/78',centreline:path,low:lo,high:hi,previousCuboids:pieces.length};g.add(mesh);
+ }
  // A0902 explicitly distinguishes the outer north terrace SSL7200 from
  // interior SSL6630 and front balcony SSL6530. Its stepped inner boundary
  // is a rounded grid trace; the base transfer plate is retained underneath.
@@ -133,6 +161,12 @@ export function makeAnna(){
    if(side==='B'&&level===0&&horizontal&&Math.abs(a[1]-21.95)<.02&&hi<=10.8)openings=[[7.8,10.4,0,2.35]];
    if(side==='B'&&!horizontal&&lo>=21.7&&Math.min(a[0],b[0])>=14.7&&Math.max(a[0],b[0])<=20.3)openings=[];
    if(side==='B'&&level===0&&horizontal&&Math.abs(a[1]-25.2)<.01)openings=[...openings,[27.70,28.60,0,2.04]];
+   // W2: use the actual B2 underside (RL7.650), not the generic 300 mm
+   // floor allowance. W1 is the same adjoining ground enclosure defect.
+   // Raise the source wall/head sections only; no filler and no moved slab.
+   const localContact=side==='B'&&level===0&&((!horizontal&&Math.abs(a[0]-29.05)<.01)||
+    (horizontal&&Math.abs(a[1]-25.2)<.01));
+   const wallH=localContact?levels.B[1]-.27-y:h;
    const at=v=>{const t=(v-a[axis])/(b[axis]-a[axis]);return[a[0]+dx*t,a[1]+dz*t]};
    const cuts=[lo,hi,...openings.flatMap(o=>o.slice(0,2)).filter(v=>v>lo&&v<hi)].sort((a,b)=>a-b);
    for(let k=1;k<cuts.length;k++){
@@ -143,11 +177,11 @@ export function makeAnna(){
     // through the floor joint. This replaces the gap left by the old balcony
     // band; it is not a cover over a projecting slab or a new void-spanning cap.
     const nookJoint=side==='B'&&level>0&&!horizontal&&lo>=21.7&&Math.min(a[0],b[0])>=14.7&&Math.max(a[0],b[0])<=20.3;
-    if(!o)segment(g,'drawing opaque facade',left,right,y-(nookJoint?.30:0),h+(nookJoint?.30:0),.20,mat.clay);
+    if(!o)segment(g,'drawing opaque facade',left,right,y-(nookJoint?.30:0),wallH+(nookJoint?.30:0),.20,mat.clay);
     else{const sill=o[2],head=Math.min(o[3],h);if(sill>0)segment(g,'window sill wall',left,right,y,sill,.20,mat.clay);
      const fireDoor=side==='B'&&level===0&&horizontal&&Math.abs(a[1]-25.2)<.01&&m>27.70&&m<28.60;
      if(!fireDoor)segment(g,'verified opening / simplified mullions',left,right,y+sill,head-sill,.13,mat.glass);
-     if(h>head)segment(g,'window head wall',left,right,y+head,h-head,.20,mat.clay);}
+     if(wallH>head)segment(g,'window head wall',left,right,y+head,wallH-head,.20,mat.clay);}
    }
   }
  };
@@ -160,7 +194,9 @@ export function makeAnna(){
   const g=group(`${side} / level ${i+1} / enclosure`),y=levels[side][i],h=levels[side][i+1]-y-.3;
   if(side==='A'&&i===0){const pts=groundWalls.A;facade(g,pts,y,h,side,i);for(const x of [56.5,64])box(g,'podium pier',x,y,27.5,.45,h,.55);continue;}
   const pts=i===0?groundWalls.B:envelopes[side];facade(g,pts,y,h,side,i);
-  for(let j=0;j<pts.length;j++){const p=pts[j],joint=side==='B'&&i>0&&p[0]>=14.7&&p[0]<=20.3&&p[1]>=21.7?.30:0;box(g,'solid exterior pier',p[0]-.18,y-joint,p[1]-.18,.36,h+joint,.36);}
+  for(let j=0;j<pts.length;j++){const p=pts[j],joint=side==='B'&&i>0&&p[0]>=14.7&&p[0]<=20.3&&p[1]>=21.7?.30:0;
+   const localContact=side==='B'&&i===0&&((Math.abs(p[0]-29.05)<.01&&p[1]>=20.4)||(Math.abs(p[0]-23.6)<.01&&Math.abs(p[1]-25.2)<.01));
+   box(g,'solid exterior pier',p[0]-.18,y-joint,p[1]-.18,.36,(localContact?levels.B[1]-.27-y:h)+joint,.36);}
   g.userData.facade='A0101–03 / A0301: explicit opening/opaque partition, no continuous glass behind walls';
  }
  // A0102/3 + IMG_7772: continuous rendered narrow-window bay, not an

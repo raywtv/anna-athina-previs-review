@@ -1,12 +1,12 @@
 {
-  "review": "b-balcony-termination-successor",
-  "release": "2026-09-26-v1",
+  "review": "b-local-contact-successor",
+  "release": "2026-09-27-v1",
   "building": {
     "groups": 35,
-    "triangles": 26960,
-    "drawCalls": 79
+    "triangles": 26808,
+    "drawCalls": 82
   },
-  "sourceGeometrySHA256": "a2f33701fbc63103dffdf562efcaa8c5d1810ef392bab2818a3c92d483ba884d",
+  "sourceGeometrySHA256": "6c0287b68800fe75cba2b8b71d8e353af33e52bf0cb4512427993bd894e19523",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "a14005c05aa6e2b64009b43c28bf2146221f8c87f199a66381ec11e962fb89fe"
+  "fullFilmSHA256": "e83d3502ab2085772e0b4f90f3adbdd9ac93b688a0e808bbdb107a077d945fdf"
 }

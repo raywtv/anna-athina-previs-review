@@ -58,6 +58,10 @@ export function createConstruction(rt){
   const glass=[look.materials.glass,look.materials.rail,look.materials.pool].includes(final);
   const kind=name.includes('cores')||name.includes('pool shell')?'core':name.includes('enclosure')?'wall':'slab';
   const box=new T.Box3().setFromObject(o),plane=new T.Plane(new T.Vector3(0,-1,0),100);
+  // The repaired curve was formerly part of this group's cuboid batch.
+  // Keep its shared construction front instead of revealing a tiny standalone
+  // corner before the supporting slab has reached it. Timing is unchanged.
+  if(name==='B / level 3 / balcony bands'&&o.parent.children.some(m=>m.userData.contactRepair))box.setFromObject(o.parent);
   // Thin plates resolve in plan from the connection outward. Height clipping a
   // thin slab exposes its underside as a false top and produces self-shadow bands.
   // This is a schematic zone reveal, not a claimed concrete pour-front direction.

@@ -4,13 +4,17 @@
 export const gradeKnots=[[-25,3.63],[-11,3.70],[7.5,3.77],[22.932,3.852],[32.45,3.852],[43.17,3.866],[59.8,3.90],[79,3.97],[100,4.04]];
 export const frontageY=x=>{for(let i=1;i<gradeKnots.length;i++)if(x<=gradeKnots[i][0]){const a=gradeKnots[i-1],b=gradeKnots[i];return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]);}return gradeKnots.at(-1)[1]};
 export function buildSiteContext({base,solidQuad,mat}){
+ // P1 already exists geometrically. Keep its grade/width and give its batch
+ // an explicit identity so the generic site override cannot erase its read.
+ const pedestrian=mat.base.clone();pedestrian.color.setHex(0xabadac);
  const quad=(n,x0,x1,z0,z1,a,b,c,d,m=mat.base)=>solidQuad(base,n,[[x0,a,z0],[x1,b,z0],[x1,c,z1],[x0,d,z1]],2.70,m);
  const xs=[...new Set([...gradeKnots.map(p=>p[0]),17.1,24.132,29.8,32.323,37.45,43.17,44.18,45.38,48.5,49.88,53.5,59.8,65.8,90])].sort((a,b)=>a-b);
  for(let i=1;i<xs.length;i++){
   const a=xs[i-1],b=xs[i],m=(a+b)/2,ya=frontageY(a),yb=frontageY(b);
   const back=m>=53.5&&m<=59.8?30.15:m>=37.45&&m<=53.5?28.9:29.15;
-  quad('continuous footpath / longitudinal B-beach fall',a,b,back,31.86,ya,yb,yb,ya);
-  quad('continuous kerb / 150mm',a,b,31.86,32,ya,yb,yb,ya);
+  const pathMaterial=m>=-11&&m<=32.45?pedestrian:mat.base;
+  quad('continuous footpath / longitudinal B-beach fall',a,b,back,31.86,ya,yb,yb,ya,pathMaterial);
+  quad('continuous kerb / 150mm',a,b,31.86,32,ya,yb,yb,ya,pathMaterial);
   quad('continuous street / same longitudinal fall',a,b,32,80,ya-.15,yb-.15,yb-.15,ya-.15,mat.core);
  }
  const threshold=(n,x0,x1,z0,z1,y)=>quad(n,x0,x1,z0,z1,y,y,y,y);

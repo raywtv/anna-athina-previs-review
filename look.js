@@ -154,6 +154,7 @@ export function applyLook(model){
   if(name==='roof / pool water')m=materials.pool;
   if(name==='roof / raised terrace'&&old===0xe8e5dc)m=materials.tile;
   if(name.includes('site /'))m=materials.base;
+  if(name.includes('site /')&&old===0xabadac)m=materials.wall; // P1 concrete path: reuse approved mineral material, distinct from road.
   if(old===0x788274)m=materials.garden;
   if(name==='connection / glazing and roof'&&old===0xe8e5dc)m=materials.metal;
   if(old===0x3d4240)m=materials.metal; // New service leaves reuse the approved metal material.
