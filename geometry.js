@@ -129,6 +129,30 @@ export function makeAnna(){
   const mesh=new T.Mesh(geo,rail?mat.rail:mat.band);mesh.name='B3 outer front / continuous '+(rail?'glass curved return':'solid upturn curved return');
   mesh.userData.contactRepair={target:'B2 diagnostic',source:'A0103 + IMG_7773/74/76/78',centreline:path,low:lo,high:hi,previousCuboids:pieces.length};g.add(mesh);
  }
+ // J1: A0103 + IMG_7777/7778. The nook centroid filter above removed the
+ // entire long rear perimeter, including its legitimate outer-wall end.
+ // Rebuild ONLY the rear arc and its supported return into the existing wall.
+ // The final short return reconciles rounded outline and enclosure traces;
+ // it is an architectural perimeter, not a face covering a gap.
+ for(const rail of [false,true]){
+  const g=groups[`B / level 3 / ${rail?'balustrades':'balcony bands'}`];
+  const ps=shape(outlines.B3).getPoints(10).map(p=>[p.x,p.y]),arc=[];
+  for(let i=1;i<ps.length;i++)if((ps[i-1][0]+ps[i][0])/2<5.3&&(ps[i-1][1]+ps[i][1])/2<19){if(!arc.length)arc.push(ps[i-1]);arc.push(ps[i]);}
+  if(arc.length!==21)throw Error('J1 arc selection changed');
+  for(const o of [...g.children])if(o.name==='perimeter'&&o.position.x<5.3&&o.position.z<19)g.remove(o);
+  // Arc is ordered from the outer side to its rear tangent. Follow the
+  // existing slab edge to X5.12, then meet the actual corner pier at Z18.12.
+  if(arc[0][1]<arc.at(-1)[1])arc.reverse();
+  const tangent=arc.at(-1),path=[...arc,[5.12,tangent[1]+(5.12-tangent[0])*(18.2-tangent[1])/(26.8-tangent[0])],[5.12,18.12]];
+  const half=rail?.0175:.075,lo=rail?11.84:10.94,hi=rail?12.29:11.84;
+  const rings=path.map((q,i)=>{const a=path[Math.max(0,i-1)],b=path[Math.min(path.length-1,i+1)],u=new T.Vector2(q[0]-a[0],q[1]-a[1]),v=new T.Vector2(b[0]-q[0],b[1]-q[1]);if(u.lengthSq()<1e-9)u.copy(v);if(v.lengthSq()<1e-9)v.copy(u);u.normalize();v.normalize();const n=new T.Vector2(-u.y-v.y,u.x+v.x).multiplyScalar(half/(1+u.dot(v)));return[[q[0]+n.x,lo,q[1]+n.y],[q[0]+n.x,hi,q[1]+n.y],[q[0]-n.x,hi,q[1]-n.y],[q[0]-n.x,lo,q[1]-n.y]];});
+  const pos=[],tri=(a,b,c)=>pos.push(...a,...b,...c);
+  for(let i=1;i<rings.length;i++)for(let j=0;j<4;j++){const k=(j+1)%4;tri(rings[i-1][j],rings[i][j],rings[i][k]);tri(rings[i-1][j],rings[i][k],rings[i-1][k]);}
+  const a=rings[0],b=rings.at(-1);tri(a[0],a[1],a[2]);tri(a[0],a[2],a[3]);tri(b[2],b[1],b[0]);tri(b[3],b[2],b[0]);
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.computeVertexNormals();const m=new T.Mesh(geo,rail?mat.rail:mat.band);
+  m.name='J1 / '+(rail?'glass return to rear wall':'solid fascia and upturn return to rear wall');
+  m.userData.j1Repair={path,low:lo,high:hi,wallContact:[5.12,18.12],source:'A0103, A1031, IMG_7777/7778',precision:'existing rounded metre trace; short wall attachment is a web reconstruction, not a fabrication dimension'};g.add(m);
+ }
  // A0902 explicitly distinguishes the outer north terrace SSL7200 from
  // interior SSL6630 and front balcony SSL6530. Its stepped inner boundary
  // is a rounded grid trace; the base transfer plate is retained underneath.
@@ -315,6 +339,14 @@ export function makeAnna(){
  buildServiceFrontage({T,g:groups['A / level 1 / enclosure'],base,box,segment,solidQuad,mat});
  buildSiteContext({base,solidQuad,plate,mat});
  plate(base,'B garden recess / A0101 U1 W6-W7 open landscape',[[15.18,22.18],[19.87,22.18],[19.87,25.88],[15.18,25.88]],4.508,.008,mat.garden);
+ // Private Unit 1B circulation, distinct from P1, ramp and road. A0101/A0106
+ // control the inside-boundary route; IMG_7776/77/78 corroborate pale paving.
+ // One connected finish/support polygon: no separate floating strips.
+ // Retain the existing patio/threshold datum; 8mm finish avoids coplanar faces.
+ const privatePath=[[.75,16.75],[2.05,16.75],[2.05,25.4],[10.65,25.4],[10.65,25.65],[14.95,25.65],[14.95,25.9],[16.975,25.9],[16.975,27.0],[10.5,27.0],[10.5,28],[.75,28]];
+ const pavingMat=mat.band.clone();pavingMat.color.setHex(0x96968c);
+ const paving=plate(base,'Unit 1B internal paving / I1 to I2 to I3',privatePath,4.608,.108,pavingMat);
+ paving.userData.privatePath={outline:privatePath,top:4.608,bottom:4.50,nominalSideWidth:1.30,frontContinuationWidth:1.10,source:'A0101/A0106 + IMG_7776/7777/7778',levelNote:'preserved model patio 4.60 plus 8mm finish; exterior SSL4.50 retained support; drainage falls simplified'};
  // Batch only the newly authored entrance surface solids by their shared material.
  // Coordinates/normals are already model-space; retain part names for diagnostics.
  const surfaceBatches=new Map();for(const m of [...base.children])if(m.userData.entrySurface){if(!surfaceBatches.has(m.material))surfaceBatches.set(m.material,[]);surfaceBatches.get(m.material).push(m);}

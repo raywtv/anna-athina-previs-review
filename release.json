@@ -1,12 +1,12 @@
 {
-  "review": "b-local-contact-successor",
-  "release": "2026-09-27-v1",
+  "review": "b-termination-internal-path-successor",
+  "release": "2026-09-27-j1-i123-v1",
   "building": {
     "groups": 35,
-    "triangles": 26808,
-    "drawCalls": 82
+    "triangles": 26732,
+    "drawCalls": 85
   },
-  "sourceGeometrySHA256": "6c0287b68800fe75cba2b8b71d8e353af33e52bf0cb4512427993bd894e19523",
+  "sourceGeometrySHA256": "697dc270b13c846eb9c659611c38328cfc8145d1f5475d3d94b899bf7b4ebb27",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "e83d3502ab2085772e0b4f90f3adbdd9ac93b688a0e808bbdb107a077d945fdf"
+  "fullFilmSHA256": "9bf916faebea02bd0f0da8bea44d6c54c39b494184d545cdc4597f4bee9b2447"
 }
