@@ -1,12 +1,12 @@
 {
-  "review": "b-termination-internal-path-successor",
-  "release": "2026-09-27-j1-i123-v1",
+  "review": "b-facade-a-support-successor",
+  "release": "2026-09-27-b-facade-v1",
   "building": {
     "groups": 35,
-    "triangles": 26732,
-    "drawCalls": 85
+    "triangles": 26524,
+    "drawCalls": 89
   },
-  "sourceGeometrySHA256": "697dc270b13c846eb9c659611c38328cfc8145d1f5475d3d94b899bf7b4ebb27",
+  "sourceGeometrySHA256": "663bec286040846adb4dd2a07a9afb91aab6c1ef99fa34652d3401861281d1a5",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "9bf916faebea02bd0f0da8bea44d6c54c39b494184d545cdc4597f4bee9b2447"
+  "fullFilmSHA256": "1aec82c50430e34f4605e884ca2d04d6cf8478b64a2233389ad86021f5553e9d"
 }

@@ -61,7 +61,7 @@ export function createConstruction(rt){
   // The repaired curve was formerly part of this group's cuboid batch.
   // Keep its shared construction front instead of revealing a tiny standalone
   // corner before the supporting slab has reached it. Timing is unchanged.
-  if(name==='B / level 3 / balcony bands'&&o.parent.children.some(m=>m.userData.contactRepair))box.setFromObject(o.parent);
+  if((name==='B / level 3 / balcony bands'||name==='B / level 2 / balcony bands')&&o.parent.children.some(m=>m.userData.contactRepair))box.setFromObject(o.parent);
   // Thin plates resolve in plan from the connection outward. Height clipping a
   // thin slab exposes its underside as a false top and produces self-shadow bands.
   // This is a schematic zone reveal, not a claimed concrete pour-front direction.

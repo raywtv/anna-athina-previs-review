@@ -129,6 +129,29 @@ export function makeAnna(){
   const mesh=new T.Mesh(geo,rail?mat.rail:mat.band);mesh.name='B3 outer front / continuous '+(rail?'glass curved return':'solid upturn curved return');
   mesh.userData.contactRepair={target:'B2 diagnostic',source:'A0103 + IMG_7773/74/76/78',centreline:path,low:lo,high:hi,previousCuboids:pieces.length};g.add(mesh);
  }
+ // 2B continuous curved finish: replace separated tangent boxes only.
+ for(const sector of ['front','rear'])for(const rail of [false,true]){
+  const g=groups[`B / level 2 / ${rail?'balustrades':'balcony bands'}`];
+  const pieces=g.children.filter(o=>o.name==='perimeter'&&o.position.x<5.3&&(sector==='front'?o.position.z>25:o.position.z<19));
+  const ps=shape(outlines.B2).getPoints(10).map(p=>[p.x,p.y]),path=[];
+  for(let i=1;i<ps.length;i++){const a=ps[i-1],b=ps[i];if((a[0]+b[0])/2<5.3&&(sector==='front'?(a[1]+b[1])/2>25:(a[1]+b[1])/2<19)){if(!path.length)path.push(a);path.push(b);}}
+  if(path.length<3||pieces.length!==path.length-1)throw Error('B outer front curve selection changed');
+  for(const o of pieces)g.remove(o);
+  const half=rail?.0175:.075,lo=rail?8.52:7.62,hi=rail?8.97:8.52;
+  const rings=path.map((p,i)=>{const a=path[Math.max(0,i-1)],b=path[Math.min(path.length-1,i+1)];
+   const u=new T.Vector2(p[0]-a[0],p[1]-a[1]),v=new T.Vector2(b[0]-p[0],b[1]-p[1]);
+   if(u.lengthSq()<1e-10)u.copy(v);if(v.lengthSq()<1e-10)v.copy(u);u.normalize();v.normalize();
+   const n1=new T.Vector2(-u.y,u.x),n2=new T.Vector2(-v.y,v.x),n=n1.clone().add(n2).multiplyScalar(half/(1+n1.dot(n2)));
+   return [[p[0]+n.x,lo,p[1]+n.y],[p[0]+n.x,hi,p[1]+n.y],[p[0]-n.x,hi,p[1]-n.y],[p[0]-n.x,lo,p[1]-n.y]];
+  });
+  const pos=[],tri=(a,b,c)=>pos.push(...a,...b,...c);
+  for(let i=1;i<rings.length;i++)for(let j=0;j<4;j++){const k=(j+1)%4;tri(rings[i-1][j],rings[i][j],rings[i][k]);tri(rings[i-1][j],rings[i][k],rings[i-1][k]);}
+  tri(rings[0][0],rings[0][1],rings[0][2]);tri(rings[0][0],rings[0][2],rings[0][3]);
+  const end=rings.at(-1);tri(end[2],end[1],end[0]);tri(end[3],end[2],end[0]);
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.computeVertexNormals();
+  const mesh=new T.Mesh(geo,rail?mat.rail:mat.band);mesh.name='B2 outer '+sector+' / continuous '+(rail?'glass curved return':'solid upturn curved return');
+  mesh.userData.contactRepair={target:'2B '+sector+' curve',source:'A0102/A1031 + IMG_7776/7777/7778',centreline:path,low:lo,high:hi,previousCuboids:pieces.length};g.add(mesh);
+ }
  // J1: A0103 + IMG_7777/7778. The nook centroid filter above removed the
  // entire long rear perimeter, including its legitimate outer-wall end.
  // Rebuild ONLY the rear arc and its supported return into the existing wall.
@@ -178,6 +201,14 @@ export function makeAnna(){
    if(horizontal&&Math.max(a[1],b[1])>=21)openings=frontOpen[side];
    else if(horizontal)openings=side==='B'?[[9.4,11.2,.85,2.3],[13.2,14.8,.85,2.3],[18.2,19.3,1.1,2.3],[21.2,23.5,.85,2.3]]:[[34.1,36.3,.85,2.3],[38.7,40.9,.85,2.3],[43,45.2,0,2.35],[49,51.2,0,2.35],[53.6,55.8,.85,2.3],[57.2,59.4,.85,2.3]];
    else openings=side==='B'?[[21.4,24.5,0,2.35]]:[[9.2,11.4,0,2.35],[12.3,14.5,0,2.35],[16,18.2,0,2.35],[21,23.2,0,2.35]];
+   // A0101/2/3 + A0802/0803 schedules: OUTER end only. Z jamb traces
+   // rounded to 50 mm against the lettered grids; clear widths from schedule.
+   // Do not apply to the central nook returns or long street-facing frontage.
+   const pairedEnd=side==='B'&&!horizontal&&Math.abs(a[0]-(level===0?2.3:5.3))<.01&&Math.abs(b[0]-a[0])<.01;
+   if(pairedEnd){
+    openings=level===0?[[18.20,20.90,0,2.40],[21.45,24.15,0,2.40]]:[[18.55,20.95,0,2.40],[21.45,24.65,0,2.40]];
+    g.userData.pairedDoors={source:level===0?'A0101/A0802 U1 D14+D13':'A010'+(level+1)+'/A0803 '+(level===1?'U2 D12+D11':'U8 D11+D10'),x:a[0],y,openings,nominalWidths:level===0?[2.7,2.7]:[2.4,3.2],head:2.4,registration:'rounded grid trace; scheduled clear dimensions; no camera fitting'};
+   }
    if(side==='A'&&level===0){ // A0101 car park rear wall is opaque; retail front only.
     openings=horizontal&&a[1]<10?[]:horizontal?[[59.8,62.5,.55,2.35],[66,70.5,0,2.6]]:[[7.5,24.5,0,2.6]];
    }
@@ -277,7 +308,7 @@ export function makeAnna(){
  box(core,'upper connection wall',32.4,11.24,26.5,6.8,3.05,.3,mat.clay);
  // A0101 and IMG_7761: vehicle aperture is uninterrupted. The approximate-grid
  // support at X39.9 crossed the drive; only that erroneous A-front instance is removed.
- for(const x of [47.4,54.9,61.7])box(supports,'ground column',x,3.4,27,.4,3.23,.5,mat.clay);
+ for(const x of [47.4,54.9])box(supports,'ground column',x,3.4,27,.4,3.23,.5,mat.clay);
  for(const side of ['A','B']){const g=group(`${side} / roof plate and profile`),y=levels[side][3];roof(g,`${side} roof`,outlines['roof'+side],y);}
  const terrace=group('roof / raised terrace');
  // Four deck strips preserve the pool opening; a solid deck would occlude its surface.
@@ -360,6 +391,8 @@ export function makeAnna(){
  root.userData={units:'metres',sources:['A0101–A0105','A0901–A0905','A0301–A0302','A1033'],groups:Object.keys(groups)};
  return {root,groups};
 }
+
+
 
 
 
