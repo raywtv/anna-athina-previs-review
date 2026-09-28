@@ -3,6 +3,8 @@ import {buildSiteContext} from './site-context.js';
 import {buildServiceFrontage} from './service-frontage.js';
 import {buildEntryAssembly} from './entry-assembly.js';
 import {slabVoids,groundWalls,poolGeometry} from './refinement-data.js';
+import {buildAEnvelope,buildMappedWall,bRear,carparkLouvres} from './facade-map.js';
+import {buildUnit4Slab} from './unit4-slab.js';
 
 // Drawing coordinate system, metres. X = grid 1 -> 11; Z = A -> E; Y = RL.
 // Outlines traced against the 7.5 m grid in A0101–A0105 / A0901–A0905.
@@ -70,7 +72,10 @@ export function makeAnna(){
  for(const [a,b] of [[[-3.5,14.5],[-10.4,28.9]],[[-10.4,28.9],[17.1,28.9]],[[17.1,28.9],[17.1,26.55]],[[17.1,26.55],[27.55,26.55]],[[27.55,26.55],[27.55,25.45]],[[-3.5,14.5],[26.8,14.5]]]){segment(base,'A1037 retained edge',a,b,3.15,1.45,.19,mat.clay);segment(base,'A1037 cap',a,b,4.5,.1,.25,mat.band);}
  base.userData.fidelity='A0106 tapered site; A0901 exterior4500/interior4600; A1037/9 retaining wall cap4600';
  for(const side of ['A','B'])for(let i=0;i<3;i++){
-  const g=group(`${side} / level ${i+1} / slab`);const y=levels[side][i];plate(g,`${side}${i+1} slab`,outlines[side+(i+1)],y,side==='A'&&i===1?.39:.27,mat.band,slabVoids[side+(i+1)]||[]);g.userData={stage:side==='A'&&i===1?'transfer':'floor',wing:side,level:i+1,thicknessStatus:side==='A'&&i===1?'390 mm representative A0902 zone; local thicknesses vary':'simplified'};
+  const g=group(`${side} / level ${i+1} / slab`);const y=levels[side][i];
+  if(side==='A'&&i===1)buildUnit4Slab({T,group:g,shape,outline:outlines.A2,holes:slabVoids.A2,material:mat.band});
+  else plate(g,`${side}${i+1} slab`,outlines[side+(i+1)],y,.27,mat.band,slabVoids[side+(i+1)]||[]);
+  g.userData={stage:side==='A'&&i===1?'transfer':'floor',wing:side,level:i+1,thicknessStatus:side==='A'&&i===1?'390 mm representative underside; Unit4 courtyard top lowered100 mm; A0902 local thicknesses remain simplified':'simplified'};
   if(i>0){const fas=group(`${side} / level ${i+1} / balcony bands`);boundary(fas,outlines[side+(i+1)],y-.30,.90,.15,mat.band,side==='A'&&i===1);const rails=group(`${side} / level ${i+1} / balustrades`);boundary(rails,outlines[side+(i+1)],y+.60,.45,.035,mat.rail,side==='A'&&i===1);fas.userData.source='A1031 parapet up to 600 mm, A0902/3 local heights vary; 600 mm representative, not universal as-built';}
  }
  // A0102/A0103 + A1031/5 + IMG_7772: four independent balcony ends.
@@ -197,6 +202,12 @@ export function makeAnna(){
    // Replace only the erroneous service-frontage trace with its actual apertures/returns.
    if(side==='A'&&level===0&&Math.min(a[0],b[0])>=37.1&&Math.max(a[0],b[0])<=59.8&&Math.min(a[1],b[1])>=23)continue;
    const horizontal=Math.abs(dx)>Math.abs(dz),axis=horizontal?0:1,lo=Math.min(a[axis],b[axis]),hi=Math.max(a[axis],b[axis]);
+   // Batch1: only these certified rear zones replace the generic aperture rule.
+   if((side==='B'&&horizontal&&Math.max(a[1],b[1])<19)||(side==='A'&&level===0&&horizontal&&Math.max(a[1],b[1])<10)){
+    const map=side==='B'?bRear[level]:carparkLouvres;
+    buildMappedWall(g,{id:side+' rear '+(level+1),a,b,openings:map.filter(o=>o.c>lo&&o.c<hi)},y,h,{T,segment,mat},{source:side==='B'?'A0101-03, A0302, A0802/A0811':'A0101, A0302, A0810, IMG_7758'});
+    continue;
+   }
    let openings=[];
    if(horizontal&&Math.max(a[1],b[1])>=21)openings=frontOpen[side];
    else if(horizontal)openings=side==='B'?[[9.4,11.2,.85,2.3],[13.2,14.8,.85,2.3],[18.2,19.3,1.1,2.3],[21.2,23.5,.85,2.3]]:[[34.1,36.3,.85,2.3],[38.7,40.9,.85,2.3],[43,45.2,0,2.35],[49,51.2,0,2.35],[53.6,55.8,.85,2.3],[57.2,59.4,.85,2.3]];
@@ -223,6 +234,17 @@ export function makeAnna(){
     (horizontal&&Math.abs(a[1]-25.2)<.01));
    const wallH=localContact?levels.B[1]-.27-y:h;
    const at=v=>{const t=(v-a[axis])/(b[axis]-a[axis]);return[a[0]+dx*t,a[1]+dz*t]};
+   // AA-015: reserve the actual later corner-pier footprint BEFORE partition.
+   // Does not scale glazing or move a pier. Six protected B end doors are exempt
+   // (their scheduled jambs already clear all piers). Fully orphaned slices vanish.
+   if(side==='B'&&!pairedEnd)openings=openings.map(o=>[Math.max(o[0],lo+.18),Math.min(o[1],hi-.18),o[2],o[3]]).filter(o=>o[1]-o[0]>.06);
+   // AA-015 ground A: allocate the perpendicular wall half-thickness first.
+   // At X32.5 the certified entry jamb occupies Z22.915..23.115. Its solid
+   // footprint wins over the old generic side glass; the jamb/entry do not move.
+   if(side==='A'&&level===0&&!horizontal&&(Math.abs(a[0]-30)<.01||Math.abs(a[0]-32.5)<.01)){
+    const end=Math.abs(a[0]-32.5)<.01?Math.min(hi-.1,22.915):hi-.1;
+    openings=openings.map(o=>[Math.max(o[0],lo+.1),Math.min(o[1],end),o[2],o[3]]).filter(o=>o[1]-o[0]>.06);
+   }
    const cuts=[lo,hi,...openings.flatMap(o=>o.slice(0,2)).filter(v=>v>lo&&v<hi)].sort((a,b)=>a-b);
    for(let k=1;k<cuts.length;k++){
     const u=cuts[k-1],v=cuts[k],m=(u+v)/2,o=openings.find(o=>m>o[0]&&m<o[1]);
@@ -247,6 +269,7 @@ export function makeAnna(){
  };
  for(const side of ['A','B'])for(let i=0;i<3;i++){
   const g=group(`${side} / level ${i+1} / enclosure`),y=levels[side][i],h=levels[side][i+1]-y-.3;
+  if(side==='A'&&i>0){buildAEnvelope(g,i+1,y,h,{T,segment,mat});continue;}
   if(side==='A'&&i===0){const pts=groundWalls.A;facade(g,pts,y,h,side,i);for(const x of [56.5,64])box(g,'podium pier',x,y,27.5,.45,h,.55);continue;}
   const pts=i===0?groundWalls.B:envelopes[side];facade(g,pts,y,h,side,i);
   for(let j=0;j<pts.length;j++){const p=pts[j],joint=side==='B'&&i>0&&p[0]>=14.7&&p[0]<=20.3&&p[1]>=21.7?.30:0;

@@ -1,12 +1,12 @@
 {
-  "review": "b-facade-a-support-successor",
-  "release": "2026-09-27-b-facade-v1",
+  "review": "certification-batch-1-final-successor",
+  "release": "2026-09-27-certification-batch1-final-v1",
   "building": {
     "groups": 35,
-    "triangles": 26524,
-    "drawCalls": 89
+    "triangles": 34164,
+    "drawCalls": 99
   },
-  "sourceGeometrySHA256": "663bec286040846adb4dd2a07a9afb91aab6c1ef99fa34652d3401861281d1a5",
+  "sourceGeometrySHA256": "374b6e1fa4c6a61d5e9021d6c867932855635146e636421eaa09a4a863ae30e9",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "1aec82c50430e34f4605e884ca2d04d6cf8478b64a2233389ad86021f5553e9d"
+  "fullFilmSHA256": "528f21babd8cad4fa4525389edb89699e9e55345679ed53337e9bb1b23a23300"
 }
