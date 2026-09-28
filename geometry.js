@@ -328,7 +328,9 @@ export function makeAnna(){
  const supports=group('supports / structural columns');const blades=group('facade / architectural blades');for(const x of [8.9,9.45,47.55,48.1]){const isB=x<20;box(blades,'paired vertical facade blade',x,isB?4.6:3.4,isB?27.1:27.05,.18,isB?9.7:9.0,.55,mat.band);}
  // North-face pair, located along the angled exterior edge in A0903.
  for(const z of [20.05,20.6])box(blades,'north facade blade',63.55,3.4,z,.55,9.0,.18,mat.band);
- box(core,'upper connection wall',32.4,11.24,26.5,6.8,3.05,.3,mat.clay);
+ // AA-002 residual: A0103 / A0301 east / IMG_7761. End at the
+ // stair/Unit9 solid boundary, not across U9 D6. Existing Y/Z retained.
+ box(core,'upper connection wall',32.4,11.24,26.5,4.3,3.05,.3,mat.clay);
  // A0101 and IMG_7761: vehicle aperture is uninterrupted. The approximate-grid
  // support at X39.9 crossed the drive; only that erroneous A-front instance is removed.
  for(const x of [47.4,54.9])box(supports,'ground column',x,3.4,27,.4,3.23,.5,mat.clay);

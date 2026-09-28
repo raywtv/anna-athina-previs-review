@@ -1,12 +1,12 @@
 {
-  "review": "certification-batch-1-final-successor",
-  "release": "2026-09-27-certification-batch1-final-v1",
+  "review": "certification-batch-1-aa002-residual-successor",
+  "release": "2026-09-28-aa002-residual-v1",
   "building": {
     "groups": 35,
     "triangles": 34164,
     "drawCalls": 99
   },
-  "sourceGeometrySHA256": "374b6e1fa4c6a61d5e9021d6c867932855635146e636421eaa09a4a863ae30e9",
+  "sourceGeometrySHA256": "cac7260f8dd532467c957b80694ea197358577e1ae50be9a4a4a88c12716df13",
   "entryAssemblySHA256": "8bc90004314277687716b8d225ccf1d86843672185b78d2ff5b220b4256be8c0",
-  "fullFilmSHA256": "528f21babd8cad4fa4525389edb89699e9e55345679ed53337e9bb1b23a23300"
+  "fullFilmSHA256": "0ca908b921e961d550d256b7ed792ea2b9f964399b89fe722ad6236e8684b070"
 }
